@@ -9,14 +9,16 @@ class AnnotatedField {
   private final String typeCast;
   private final TypeElement enclosingClassType;
   private final boolean isPrimitive;
+  private final boolean isParcel;
 
-    AnnotatedField(String name, String bundleMethod, String typeCast, TypeElement enclosingClassType, boolean isPrimitive) {
+    AnnotatedField(String name, String bundleMethod, String typeCast, TypeElement enclosingClassType, boolean isPrimitive, boolean isParcel) {
     this.name = name;
     this.bundleMethod = bundleMethod;
     this.typeCast = typeCast;
     this.enclosingClassType = enclosingClassType;
     this.isPrimitive = isPrimitive;
-  }
+        this.isParcel = isParcel;
+    }
 
   public String getName() {
     return name;
@@ -36,5 +38,9 @@ class AnnotatedField {
 
   public boolean isPrimitive() {
     return isPrimitive;
+  }
+
+  public boolean isParcel() {
+    return isParcel;
   }
 }

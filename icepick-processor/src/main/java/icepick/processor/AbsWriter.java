@@ -83,7 +83,7 @@ abstract class AbsWriter {
 
   private String emitRestoreState(AnnotatedField field) {
     String key = BASE_KEY + " + \"" + field.getName() + "\"";
-    return "if (savedInstanceState.containsKey(" + key + ")) {     target." + field.getName() + " = " + field.getTypeCast() + " savedInstanceState.get" + field.getBundleMethod() + "(" + key + ");\n}\n";
+    return "if (savedInstanceState.containsKey(" + key + ")) {     target." + field.getName() + " = " + field.getTypeCast() + unwrap(field, " savedInstanceState.get" + field.getBundleMethod() + "(" + key + ")") + ";\n}\n";
   }
 
   protected abstract String emitRestoreStateEnd();
@@ -100,11 +100,25 @@ abstract class AbsWriter {
 
   private String emitSaveState(AnnotatedField field) {
     String save = "    outState.put" + field.getBundleMethod() + "(" + BASE_KEY + " + \""
-        + field.getName() + "\", target." + field.getName() + ");\n";
+        + field.getName() + "\", " + wrap(field, " target." + field.getName() + ")") + ";\n";
     if (field.isPrimitive()) {
       return save;
     }
     return "if (target." + field.getName() + "!= null) {" + save + "}";
+  }
+
+  private String wrap(AnnotatedField field, String inputStatement) {
+    if(field.isParcel()) {
+      return "org.parceler.Parcels.wrap(" + inputStatement + ")";
+    }
+    return inputStatement;
+  }
+
+  private String unwrap(AnnotatedField field, String inputStatement) {
+    if(field.isParcel()) {
+        return "org.parceler.Parcels.unwrap(" + inputStatement + ")";
+    }
+    return inputStatement;
   }
 
   protected abstract String emitSaveStateEnd();

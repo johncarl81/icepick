@@ -4,6 +4,8 @@ dependencies {
   provided project(':icepick-processor')
 
   compile project(':sample-lib')
+  compile 'org.parceler:parceler:0.2.15'
+  provided 'org.parceler:parceler-api:0.2.15'
 }
 
 android {

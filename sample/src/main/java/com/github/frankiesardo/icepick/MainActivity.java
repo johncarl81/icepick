@@ -10,6 +10,7 @@ import icepick.Icicle;
 public class MainActivity extends BaseActivity {
 
   @Icicle String message;
+  @Icicle ExampleParcel exampleParcel;
 
   CustomView customView;
 
@@ -23,7 +24,7 @@ public class MainActivity extends BaseActivity {
 
   private void updateText() {
     String defaultText = message == null || baseMessage == null ? "Use the menu to add some state"
-        : baseMessage +  message;
+        : baseMessage +  message + "\n" + exampleParcel;
     customView.setText(defaultText);
   }
 
@@ -41,6 +42,7 @@ public class MainActivity extends BaseActivity {
 
       baseMessage = "This state will be automagically ";
       message = "saved and restored";
+      exampleParcel = new ExampleParcel("Andy", 42);
       updateText();
       return true;
     }

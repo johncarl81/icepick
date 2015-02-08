@@ -77,15 +77,34 @@ class AnnotationsConverter {
       String name = fieldElement.getSimpleName().toString();
       TypeMirror fieldType = fieldElement.asType();
       TypeElement enclosingClass = (TypeElement) fieldElement.getEnclosingElement();
-      String bundleMethod = typeToBundleMethodMap.convert(fieldType);
+        String bundleMethod;
+      boolean isParcel = isAnnotated(typeUtils.asElement(fieldType), "org.parceler.Parcel");
+        if(isParcel){
+           bundleMethod = "Parcelable";
+        }
+        else{
+           bundleMethod = typeToBundleMethodMap.convert(fieldType);
+        }
       if (bundleMethod == null) {
         logError(fieldElement, "Don't know how to put a " + fieldType + " inside a Bundle");
       }
       String typeCast = TypecastStrategy.resolve(bundleMethod, fieldType);
       boolean isPrimitive = fieldType.getKind().isPrimitive();
 
-      return new AnnotatedField(name, bundleMethod, typeCast, enclosingClass, isPrimitive);
+      return new AnnotatedField(name, bundleMethod, typeCast, enclosingClass, isPrimitive, isParcel);
     }
+
+
+      private boolean isAnnotated(Element element, String annotationName) {
+          if (element != null) {
+              for (AnnotationMirror annotationMirror : element.getAnnotationMirrors()) {
+                  if (annotationMirror.getAnnotationType().asElement().toString().equals(annotationName)) {
+                      return true;
+                  }
+              }
+          }
+          return false;
+      }
   }
 
   private class ToErasedEnclosingClass implements Function<AnnotatedField, String> {
